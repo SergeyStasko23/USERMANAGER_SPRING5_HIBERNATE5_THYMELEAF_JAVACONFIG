@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            border-spacing: 0px;
+        }
+
+        table td {
+            border: 1px solid #565454;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <a th:href="@{/}">RETURN TO MAIN MENU</a>
+
+    <br/>
+
+    <h1>Users List</h1>
+
+    <table>
+        <tr>
+            <th width="120">ID</th>
+            <th width="120">Name</th>
+            <th width="120">Email</th>
+            <th width="80">Edit</th>
+            <th width="80">Delete</th>
+        </tr>
+        <tr th:each="user : ${listUsers}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td><a th:href="@{/edit/__${user.id}__}">Edit</a></td>
+            <td><a th:href="@{/remove/__${user.id}__}">Delete</a></td>
+        </tr>
+    </table>
+
+    <h1>Add User</h1>
+        <form method="POST" th:object="${user}" th:action="@{/users/add}">
+            <table>
+                <tr>
+                    <td>ID</td>
+                    <td>
+                        <input type="text" readonly="true" size="8" disabled="true" th:field="*{id}">
+                        <input type="hidden" th:field="*{id}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>
+                        <input type="text" placeholder="Enter your name" th:field="*{name}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>
+                        <input type="text" placeholder="Enter your email" th:field="*{email}">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Edit User" th:if="*{id} != null"/>
+                        <input type="submit" value="Add User" th:if="*{id} == null"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+</body>
+</html>
