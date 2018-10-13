@@ -1,6 +1,5 @@
 package ru.stacy.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.stacy.dao.UserDao;
@@ -32,6 +31,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void removeUser(int id) {
         this.userDao.removeUser(id);
+    }
+
+    @Override
+    @Transactional
+    public void removeAllUser() {
+        this.userDao.removeAllUser();
     }
 
     @Override

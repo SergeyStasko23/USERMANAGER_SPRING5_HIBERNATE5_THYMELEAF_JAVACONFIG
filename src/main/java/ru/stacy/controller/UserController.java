@@ -3,11 +3,11 @@ package ru.stacy.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.stacy.model.User;
 import ru.stacy.service.UserService;
+
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -25,38 +25,35 @@ public class UserController {
         return "index";
     }
 
-    @RequestMapping(value = "users", method = RequestMethod.GET)
-    public String listUsers(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("listUsers", this.userService.listUsers());
-
+    @RequestMapping(value = "/users")
+    public String setupForm(Map<String, Object> map) {
+        User user = new User();
+        map.put("user", user);
+        map.put("listUsers", userService.listUsers());
         return "users";
     }
 
-    // POST - для добавления информации
-    @RequestMapping(value = "/users/add", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("user") User user, BindingResult result, Model model){
-        if (result.hasErrors()) {
-            model.addAttribute("users", userService.listUsers());
-            return "users";
+    @RequestMapping(value = "/user.do", method = RequestMethod.POST)
+    public String doActions(@ModelAttribute User user, @RequestParam String action, Map<String, Object> map) {
+        User userResult = new User();
+
+        switch (action.toLowerCase()) {
+            case "add user" : userService.addUser(user);
+                              userResult = user;
+                              break;
+            case "update user" : userService.updateUser(user);
+                                 userResult = user;
+                                 break;
+            case "remove user" : userService.removeUser(user.getId());
+                                 userResult = new User();
+                                 break;
+            case "search user" : User searchedUser = userService.getUserById(user.getId());
+                                 userResult = searchedUser != null ? searchedUser : new User();
+                                 break;
         }
 
-        userService.addUser(user);
-
-        return "redirect:/users";
-    }
-
-    @RequestMapping("/remove/{id}")
-    public String removeUser(@PathVariable("id") int id) {
-        this.userService.removeUser(id);
-
-        return "redirect:/users";
-    }
-
-    @RequestMapping("edit/{id}")
-    public String editUser(@PathVariable("id") int id, Model model) {
-        model.addAttribute("user", this.userService.getUserById(id));
-        model.addAttribute("listUsers", this.userService.listUsers());
+        map.put("user", userResult);
+        map.put("listUsers", userService.listUsers());
 
         return "users";
     }

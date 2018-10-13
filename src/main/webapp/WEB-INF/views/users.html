@@ -21,33 +21,39 @@
 
     <br/>
 
-    <h1>Users List</h1>
+    <h1>USERS</h1>
 
     <table>
         <tr>
             <th width="120">ID</th>
             <th width="120">Name</th>
             <th width="120">Email</th>
-            <th width="80">Edit</th>
-            <th width="80">Delete</th>
+            <!--<th width="80">Edit</th>-->
+            <!--<th width="80">Delete</th>-->
         </tr>
         <tr th:each="user : ${listUsers}">
             <td th:text="${user.id}"></td>
             <td th:text="${user.name}"></td>
             <td th:text="${user.email}"></td>
-            <td><a th:href="@{/edit/__${user.id}__}">Edit</a></td>
-            <td><a th:href="@{/remove/__${user.id}__}">Delete</a></td>
+            <!--<td><a th:href="@{/edit/__${user.id}__}">Edit</a></td>-->
+            <!--<td><a th:href="@{/remove/__${user.id}__}">Delete</a></td>-->
         </tr>
     </table>
 
+    <!--Условие для кнопки Edit User-->
+    <!--th:if="*{id} != null"-->
+
+    <!--Условие для кнопки Add User-->
+    <!--th:if="*{id} == null"-->
+
+    <!--@{${user.id} != null ? '/edit/__${user.id}__' : '/users/add'}-->
     <h1>Add User</h1>
-        <form method="POST" th:object="${user}" th:action="@{/users/add}">
+        <form method="POST" th:object="${user}" th:action="@{/user.do}">
             <table>
                 <tr>
                     <td>ID</td>
                     <td>
-                        <input type="text" readonly="true" size="8" disabled="true" th:field="*{id}">
-                        <input type="hidden" th:field="*{id}" />
+                        <input type="text"  th:field="*{id}">
                     </td>
                 </tr>
                 <tr>
@@ -64,8 +70,10 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="submit" value="Edit User" th:if="*{id} != null"/>
-                        <input type="submit" value="Add User" th:if="*{id} == null"/>
+                        <input type="submit" name="action" value="Add User"/>
+                        <input type="submit" name="action" value="Update User"/>
+                        <input type="submit" name="action" value="Remove User"/>
+                        <input type="submit" name="action" value="Search User"/>
                     </td>
                 </tr>
             </table>

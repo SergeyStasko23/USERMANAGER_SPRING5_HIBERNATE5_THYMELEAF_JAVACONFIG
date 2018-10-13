@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.stacy.model.User;
 
@@ -23,7 +22,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void addUser(User user) {
         Session session = this.sessionFactory.getCurrentSession();
-        session.persist(user);
+        session.save(user);
+
         logger.info("User successfully saved. User details: " + user);
     }
 
@@ -31,25 +31,31 @@ public class UserDaoImpl implements UserDao {
     public void updateUser(User user) {
         Session session = this.sessionFactory.getCurrentSession();
         session.update(user);
+
         logger.info("User successfully updated. User details: " + user);
     }
 
     @Override
     public void removeUser(int id) {
         Session session = this.sessionFactory.getCurrentSession();
-        User user = session.load(User.class, id);
+        session.delete(getUserById(id));
 
-        if(user != null){
-            session.delete(user);
-        }
+        logger.info("User successfully removed. User id: " + id);
+    }
 
-        logger.info("User successfully removed. User details: " + user);
+    @Override
+    public void removeAllUser() {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.delete(listUsers());
+
+        logger.info("All users successfully removed");
     }
 
     @Override
     public User getUserById(int id) {
         Session session = this.sessionFactory.getCurrentSession();
-        User user = session.load(User.class, id);
+        User user = session.get(User.class, id);
+
         logger.info("User successfully loaded. User details: " + user);
 
         return user;
